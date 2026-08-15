@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="{{ url_for('static', filename='images/logo.jpeg') }}" type="image/jpeg">
+  <title>Éditer un produit - RO BUSINESS CENTER</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="admin-shell">
+    <aside class="admin-sidebar">
+      <h2>Admin</h2>
+      <a href="{{ url_for('main.admin_dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('main.admin_products') }}">Produits</a>
+      <a href="{{ url_for('main.admin_categories') }}">Catégories</a>
+      <a href="{{ url_for('main.admin_galerie') }}">Galerie</a>
+      <a href="{{ url_for('main.admin_messages') }}">Messages</a>
+      <a href="{{ url_for('main.admin_settings') }}">Paramètres</a>
+      <a href="{{ url_for('main.admin_logout') }}">Déconnexion</a>
+    </aside>
+    <main class="admin-main">
+      <h1>Éditer un produit</h1>
+      <form method="post" enctype="multipart/form-data" class="admin-form">
+        <div class="form-group"><label>Nom</label><input type="text" name="name" value="{{ product.name }}" required></div>
+        <div class="form-group"><label>Description</label><textarea name="description">{{ product.description or '' }}</textarea></div>
+        <div class="form-group"><label>Marque</label><input type="text" name="brand" value="{{ product.brand or '' }}"></div>
+        <div class="form-group"><label>Processeur</label><input type="text" name="processor" value="{{ product.processor or '' }}"></div>
+        <div class="form-group"><label>RAM</label><input type="text" name="ram" value="{{ product.ram or '' }}"></div>
+        <div class="form-group"><label>Stockage</label><input type="text" name="storage" value="{{ product.storage or '' }}"></div>
+        <div class="form-group"><label>État</label><input type="text" name="state" value="{{ product.state or '' }}"></div>
+        <div class="form-group"><label>Disponibilité</label><input type="text" name="availability" value="{{ product.availability or '' }}"></div>
+        <div class="form-group"><label>Catégorie</label><select name="category_id"><option value="">Aucune</option>{% for category in categories %}<option value="{{ category.id }}" {% if product.category_id == category.id %}selected{% endif %}>{{ category.name }}</option>{% endfor %}</select></div>
+        <div class="form-group"><label>Prix (FCFA)</label><input type="number" name="price" value="{{ product.price or 0 }}"></div>
+        <div class="form-group"><label>Images supplémentaires</label><input type="file" name="images" multiple></div>
+        <button type="submit" class="btn-submit">Enregistrer</button>
+      </form>
+      <h2>Images existantes</h2>
+      <div class="gallery-grid">
+        {% for image in images %}
+        <div class="gallery-item">
+          <img src="{{ url_for('uploaded_file', filename=image.filename) }}" alt="Image produit">
+          <form method="post" action="{{ url_for('main.delete_product_image', image_id=image.id) }}">
+            <button type="submit">Supprimer</button>
+          </form>
+        </div>
+        {% endfor %}
+      </div>
+    </main>
+  </div>
+</body>
+</html>

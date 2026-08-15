@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="{{ url_for('static', filename='images/logo.jpeg') }}" type="image/jpeg">
+  <title>Dashboard admin - RO BUSINESS CENTER</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="admin-shell">
+    <aside class="admin-sidebar">
+      <h2>Admin</h2>
+      <a href="{{ url_for('main.admin_dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('main.admin_products') }}">Produits</a>
+      <a href="{{ url_for('main.admin_categories') }}">Catégories</a>
+      <a href="{{ url_for('main.admin_galerie') }}">Galerie</a>
+      <a href="{{ url_for('main.admin_messages') }}">Messages</a>
+      <a href="{{ url_for('main.admin_settings') }}">Paramètres</a>
+      <a href="{{ url_for('main.admin_logout') }}">Déconnexion</a>
+    </aside>
+    <main class="admin-main">
+      <h1>Tableau de bord</h1>
+      <div class="admin-grid">
+        <div class="stat-card"><strong>{{ total_products }}</strong><span>Produits</span></div>
+        <div class="stat-card"><strong>{{ total_images }}</strong><span>Images</span></div>
+        <div class="stat-card"><strong>{{ total_categories }}</strong><span>Catégories</span></div>
+        <div class="stat-card"><strong>{{ recent_contacts }}</strong><span>Contacts (7j)</span></div>
+        <div class="stat-card"><strong>{{ recent_inscriptions }}</strong><span>Inscriptions (7j)</span></div>
+        <div class="stat-card"><strong>{{ recent_products }}</strong><span>Nouveaux produits (7j)</span></div>
+      </div>
+      
+      <div class="admin-card" style="margin-top:20px">
+        <h2>Produits par catégorie</h2>
+        <ul>
+          {% for category, count in products_by_category.items() %}
+          <li>{{ category }}: {{ count }} produit(s)</li>
+          {% endfor %}
+        </ul>
+      </div>
+      
+      <div class="admin-card" style="margin-top:20px">
+        <h2>Derniers produits</h2>
+        <ul>
+          {% for product in latest_products %}
+          <li>{{ product.name }} — {{ product.availability or 'Disponible' }}</li>
+          {% endfor %}
+        </ul>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

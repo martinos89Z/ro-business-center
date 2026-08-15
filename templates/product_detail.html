@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>{{ product.name }} - Ro Business Center</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  <link rel="icon" href="{{ url_for('static', filename='images/logo.jpeg') }}" type="image/jpeg">
+  <script>
+    window.WHATSAPP_PHONE = '{{ WHATSAPP_PHONE }}';
+  </script>
+</head>
+
+<body>
+
+  <div class="product-page-shell">
+
+  <a href="{{ url_for('main.index') }}" class="btn-outline">← Retour à la boutique</a>
+
+    <div class="product-detail-grid">
+
+      <div>
+
+        {% if images %}
+
+        <div class="product-gallery">
+
+          {% for image in images %}
+
+          <img src="{{ url_for('uploaded_file', filename=image.filename) }}" alt="{{ product.name }}">
+
+          {% endfor %}
+
+        </div>
+
+        {% else %}
+
+        <img src="{{ url_for('static', filename='images/pc1.jpeg') }}" alt="{{ product.name }}" class="product-main-image">
+
+        {% endif %}
+
+      </div>
+
+      <div>
+
+        <h1>{{ product.name }}</h1>
+
+        <p class="section-desc">{{ product.description or 'Produit disponible chez Ro Business Center.' }}</p>
+
+        <ul class="product-spec-list">
+
+          <li><strong>Marque :</strong> {{ product.brand or '—' }}</li>
+
+          <li><strong>Processeur :</strong> {{ product.processor or '—' }}</li>
+
+          <li><strong>RAM :</strong> {{ product.ram or '—' }}</li>
+
+          <li><strong>Stockage :</strong> {{ product.storage or '—' }}</li>
+
+          <li><strong>État :</strong> {{ product.state or '—' }}</li>
+
+          <li><strong>Disponibilité :</strong> {{ product.availability or 'Disponible' }}</li>
+
+          <li><strong>Prix :</strong> {{ product.price or 0 }} FCFA</li>
+
+        </ul>
+
+        <form class="order-form" id="productOrderForm"
+              data-product-name="{{ product.name|e }}"
+              data-product-brand="{{ (product.brand or '—')|e }}"
+              data-product-processor="{{ (product.processor or '—')|e }}"
+              data-product-ram="{{ (product.ram or '—')|e }}"
+              data-product-storage="{{ (product.storage or '—')|e }}"
+              data-product-state="{{ (product.state or '—')|e }}"
+              data-product-availability="{{ (product.availability or 'Disponible')|e }}"
+              data-product-price="{{ product.price|default(0)|e }}"
+              data-product-description="{{ ((product.description or 'Aucun détail')|replace("\n", " ") )|e }}">
+
+          <label>Votre nom
+
+            <input id="clientName" type="text" placeholder="Prénom et nom" required>
+
+          </label>
+
+          <label>Téléphone
+
+            <input id="clientPhone" type="tel" placeholder="+228 XX XX XX XX" required>
+
+          </label>
+
+          <label>Message complémentaire
+
+            <textarea id="clientNotes" rows="3" placeholder="Précisions sur le produit"></textarea>
+
+          </label>
+
+          <button type="submit" class="product-cta">Commander via WhatsApp</button>
+
+        </form>
+
+        <script>
+          const form = document.getElementById('productOrderForm');
+          const productOrderDetails = {
+            name: form.dataset.productName,
+            brand: form.dataset.productBrand,
+            processor: form.dataset.productProcessor,
+            ram: form.dataset.productRam,
+            storage: form.dataset.productStorage,
+            state: form.dataset.productState,
+            availability: form.dataset.productAvailability,
+            price: form.dataset.productPrice,
+            description: form.dataset.productDescription
+          };
+
+          form.addEventListener('submit', function(event) {
+            event.preventDefault();
+            const name = document.getElementById('clientName').value.trim();
+            const phone = document.getElementById('clientPhone').value.trim();
+            const notes = document.getElementById('clientNotes').value.trim();
+            const itemDetails = [
+              `Produit: ${productOrderDetails.name}`,
+              `Marque: ${productOrderDetails.brand}`,
+              `Processeur: ${productOrderDetails.processor}`,
+              `RAM: ${productOrderDetails.ram}`,
+              `Stockage: ${productOrderDetails.storage}`,
+              `État: ${productOrderDetails.state}`,
+              `Disponibilité: ${productOrderDetails.availability}`,
+              `Prix: ${productOrderDetails.price} FCFA`,
+              `Description: ${productOrderDetails.description}`
+            ].join('\n');
+            const message = `Bonjour Ro Business Center, je souhaite commander ce produit.\n${itemDetails}\nNom: ${name || 'Non renseigné'}\nTéléphone: ${phone || 'Non renseigné'}\nNotes: ${notes || 'Aucune'}`;
+            window.open(`https://wa.me/${window.WHATSAPP_PHONE}?text=${encodeURIComponent(message)}`, '_blank');
+          });
+        </script>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</body>
+
+</html>
+

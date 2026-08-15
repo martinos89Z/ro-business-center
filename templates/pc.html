@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="{{ url_for('static', filename='images/logo.jpeg') }}" type="image/jpeg">
+{% set seo_metadata = SEOMetadata.get_page_metadata('pc') %}
+{{ SEOMetadata.render_meta_tags(seo_metadata) | safe }}
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+<!-- Structured Data (JSON-LD) -->
+{{ StructuredData.render_json_ld(breadcrumb) | safe }}
+<script>
+  window.WHATSAPP_PHONE = '{{ WHATSAPP_PHONE }}';
+</script>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="navbar">
+  <a href="{{ url_for('main.index') }}" class="nav-logo">
+    <img src="{{ url_for('static', filename='images/logo.jpeg') }}" alt="Logo Ro Business Center" class="nav-logo-icon">
+    <div class="nav-logo-text">Ro <span>Business</span><br>Center</div>
+  </a>
+  <ul class="nav-links">
+    <li><a href="{{ url_for('main.index') }}#accueil">Accueil</a></li>
+    <li><a href="{{ url_for('main.index') }}#boutique">Boutique</a></li>
+    <li><a href="{{ url_for('main.index') }}#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- PC PAGE -->
+<section class="product-page">
+  <span class="section-label">PC - Modeles</span>
+  <h2 class="section-title">Galerie des PC</h2>
+  <p class="section-desc">Consultez les modeles et les photos detaillees directement depuis la boutique.</p>
+  <div style="margin-bottom: 20px;">
+    <input type="text" id="searchInput" placeholder="Rechercher un produit..." style="width: 100%; max-width: 400px; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+  </div>
+  <div class="gallery-grid" id="galleryGrid">
+      {% for product in products %}
+      <div class="gallery-item" data-title="{{ product.name }}" data-desc="{{ product.description or '' }}" data-img="{{ url_for('static', filename='images/pc3.jpeg') if not product.images else url_for('uploaded_file', filename=product.images[0]) }}" data-brand="{{ product.brand or '' }}" data-processor="{{ product.processor or '' }}" data-ram="{{ product.ram or '' }}" data-storage="{{ product.storage or '' }}" data-state="{{ product.state or '' }}">
+        <img src="{{ url_for('uploaded_file', filename=product.images[0]) if product.images else url_for('static', filename='images/pc3.jpeg') }}" alt="{{ product.name }} - {{ product.brand|default('') }} {{ product.processor|default('') }}" loading="lazy" width="300" height="200">
+        <button class="view-btn">Voir</button>
+      </div>
+      {% endfor %}
+  </div>
+  <div style="margin-top: 30px;">
+    <a href="{{ url_for('main.index') }}#boutique" class="btn-outline">← Retour à la boutique</a>
+  </div>
+</section>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const searchInput = document.getElementById('searchInput');
+  const galleryGrid = document.getElementById('galleryGrid');
+  
+  if (searchInput && galleryGrid) {
+    searchInput.addEventListener('input', function() {
+      const searchTerm = this.value.toLowerCase();
+      const items = galleryGrid.querySelectorAll('.gallery-item');
+      
+      items.forEach(item => {
+        const title = item.dataset.title || '';
+        const desc = item.dataset.desc || '';
+        
+        if (title.toLowerCase().includes(searchTerm) || desc.toLowerCase().includes(searchTerm)) {
+          item.style.display = '';
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    });
+  }
+  
+  // Attach gallery handlers for product modal
+  document.querySelectorAll('.gallery-item').forEach(item => {
+    const btn = item.querySelector('.view-btn');
+    if (btn) {
+      btn.addEventListener('click', (event) => {
+        event.preventDefault();
+        const data = {
+          title: item.dataset.title || 'Produit',
+          desc: item.dataset.desc || '',
+          img: item.dataset.img || item.querySelector('img')?.src || '',
+          brand: item.dataset.brand || '',
+          processor: item.dataset.processor || '',
+          ram: item.dataset.ram || '',
+          storage: item.dataset.storage || '',
+          state: item.dataset.state || ''
+        };
+        if (typeof openProductModal === 'function') {
+          openProductModal(data);
+        }
+      });
+    }
+  });
+  
+  // Modal close handlers
+  const modalClose = document.getElementById('productModalClose');
+  const modalBg = document.getElementById('productModalBg');
+  if (modalClose) modalClose.addEventListener('click', () => {
+    const modal = document.getElementById('productModal');
+    if (modal) modal.setAttribute('aria-hidden', 'true');
+  });
+  if (modalBg) modalBg.addEventListener('click', () => {
+    const modal = document.getElementById('productModal');
+    if (modal) modal.setAttribute('aria-hidden', 'true');
+  });
+});
+</script>
+
+<!-- MODAL PRODUIT -->
+<div id="productModal" class="product-modal" aria-hidden="true">
+  <div class="modal-bg" id="productModalBg"></div>
+  <div class="product-modal-content">
+    <button class="modal-close" id="productModalClose">✕</button>
+    <img src="" alt="" id="modalImage" class="modal-image">
+    <h3 id="modalTitle">Titre</h3>
+    <p id="modalDesc">Description</p>
+    <div id="modalCharacteristics" style="margin:15px 0;padding:15px;background:#f5f5f5;border-radius:5px">
+      <p id="modalBrand" style="margin:5px 0"><strong>Marque:</strong> <span></span></p>
+      <p id="modalProcessor" style="margin:5px 0"><strong>Processeur:</strong> <span></span></p>
+      <p id="modalRam" style="margin:5px 0"><strong>RAM:</strong> <span></span></p>
+      <p id="modalStorage" style="margin:5px 0"><strong>Stockage:</strong> <span></span></p>
+      <p id="modalState" style="margin:5px 0"><strong>État:</strong> <span></span></p>
+    </div>
+    <div class="modal-controls">
+      <label>Quantité: <input type="number" id="modalQty" value="1" min="1" style="width:70px;margin-left:8px"></label>
+      <label style="margin-left:16px">Paiement: 
+        <select id="modalPayment">
+          <option value="Total">Total</option>
+          <option value="2x">2x sans frais</option>
+          <option value="3x">3x sans frais</option>
+          <option value="4x">4x sans frais</option>
+        </select>
+      </label>
+    </div>
+    <div style="margin-top:14px">
+      <a href="#" id="modalWhatsappBtn" class="product-cta">Commander via WhatsApp</a>
+      <a href="#" id="modalViewBtn" class="btn-outline" style="margin-left:8px">Voir le produit</a>
+    </div>
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

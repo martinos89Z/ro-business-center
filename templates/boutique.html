@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+
+<html lang="fr">
+
+<head>
+
+  <meta charset="UTF-8">
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Boutique - Ro Business Center</title>
+
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+</head>
+
+<body>
+
+  <nav id="navbar">
+
+    <a href="/" class="nav-logo">
+
+      <img src="{{ url_for('static', filename='images/logo.jpeg') }}" alt="Logo" class="nav-logo-icon">
+
+      <div class="nav-logo-text">Ro <span>Business</span><br>Center</div>
+
+    </a>
+
+  </nav>
+
+
+
+  <section style="padding:40px 5%">
+
+    <h1 class="section-title">Boutique</h1>
+
+    <p class="section-desc">Filtrez par catégorie pour trouver rapidement ce dont vous avez besoin.</p>
+
+    <div style="display:flex;gap:12px;margin-bottom:20px;align-items:center;flex-wrap:wrap">
+
+      <a href="{{ url_for('main.boutique') }}" class="btn-outline">Tous</a>
+
+      {% for cat in categories %}
+
+      <a href="{{ url_for('main.boutique') }}?category={{ cat.id }}" class="btn-outline{% if selected_category and selected_category|int == cat.id %} active{% endif %}">{{ cat.name }}</a>
+
+      {% endfor %}
+
+    </div>
+
+
+
+    <div style="margin-bottom:18px">
+
+      <input id="boutiqueSearch" type="search" placeholder="Rechercher un produit, ex: souris, RAM, lenovo..." style="width:100%;max-width:420px;padding:10px;border-radius:8px;border:1px solid #d8dff0">
+
+    </div>
+
+
+
+    <div class="boutique-grid">
+
+      {% if products %}
+
+        {% for product in products %}
+
+        <div class="product-card"
+             data-name="{{ product.name|lower }}"
+             data-desc="{{ (product.description or '')|lower }}"
+             data-brand="{{ product.brand or '' }}"
+             data-processor="{{ product.processor or '' }}"
+             data-ram="{{ product.ram or '' }}"
+             data-storage="{{ product.storage or '' }}"
+             data-state="{{ product.state or '' }}"
+             data-price="{{ product.price or '' }}"
+             data-availability="{{ product.availability or 'Disponible' }}">
+
+          {% if product.images %}
+
+          <img src="{{ url_for('uploaded_file', filename=product.images[0]) }}" alt="{{ product.name }}" class="product-image">
+
+          {% else %}
+
+          <img src="{{ url_for('static', filename='images/pc1.jpeg') }}" alt="{{ product.name }}" class="product-image">
+
+          {% endif %}
+
+          <div class="product-content">
+
+            <h3>{{ product.name }}</h3>
+
+            <p>{{ product.description or 'Produit disponible à la boutique.' }}</p>
+
+            <div class="product-actions">
+
+              <a href="{{ url_for('main.product_detail', product_id=product.id) }}" class="product-cta">Voir le produit</a>
+
+              <button type="button" class="product-cta secondary" data-whatsapp-product="true" data-product="{{ product.name }}" data-category="{{ product.category_name or 'Produit' }}">Commander</button>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        {% endfor %}
+
+      {% else %}
+
+        <p>Aucun produit trouvé pour cette sélection.</p>
+
+      {% endif %}
+
+    </div>
+
+  </section>
+
+
+
+  <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+
+</body>
+
+</html>
+

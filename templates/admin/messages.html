@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="{{ url_for('static', filename='images/logo.jpeg') }}" type="image/jpeg">
+  <title>Messages - RO BUSINESS CENTER</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="admin-shell">
+    <aside class="admin-sidebar">
+      <h2>Admin</h2>
+      <a href="{{ url_for('main.admin_dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('main.admin_products') }}">Produits</a>
+      <a href="{{ url_for('main.admin_categories') }}">Catégories</a>
+      <a href="{{ url_for('main.admin_galerie') }}">Galerie</a>
+      <a href="{{ url_for('main.admin_messages') }}">Messages</a>
+      <a href="{{ url_for('main.admin_settings') }}">Paramètres</a>
+      <a href="{{ url_for('main.admin_logout') }}">Déconnexion</a>
+    </aside>
+    <main class="admin-main">
+      <h1>Messages</h1>
+      <h2>Contacts</h2>
+      <ul>
+        {% for contact in contacts %}
+        <li>{{ contact.name }} — {{ contact.subject }} — {{ contact.status }}
+          <form method="post" action="{{ url_for('main.mark_contact_processed', message_id=contact.id) }}" style="display:inline;">
+            <button type="submit">Traiter</button>
+          </form>
+          <form method="post" action="{{ url_for('main.delete_contact', message_id=contact.id) }}" style="display:inline;">
+            <button type="submit">Supprimer</button>
+          </form>
+        </li>
+        {% endfor %}
+      </ul>
+      <h2>Inscriptions</h2>
+      <ul>
+        {% for inscription in inscriptions %}
+        <li class="message-item">
+          <div class="message-header">
+            <strong>{{ inscription.prenom }} {{ inscription.nom }}</strong> — {{ inscription.formation }} — {{ inscription.status }}
+          </div>
+          <div class="message-details">
+            <p><strong>Téléphone:</strong> {{ inscription.tel }}</p>
+            {% if inscription.email %}<p><strong>Email:</strong> {{ inscription.email }}</p>{% endif %}
+            {% if inscription.message %}<p><strong>Message:</strong> {{ inscription.message }}</p>{% endif %}
+            <p><strong>Date:</strong> {{ inscription.created_at }}</p>
+          </div>
+          <div class="message-actions">
+            <form method="post" action="{{ url_for('main.mark_inscription_processed', inscription_id=inscription.id) }}" style="display:inline;">
+              <button type="submit">Traiter</button>
+            </form>
+            <form method="post" action="{{ url_for('main.delete_inscription', inscription_id=inscription.id) }}" style="display:inline;">
+              <button type="submit">Supprimer</button>
+            </form>
+          </div>
+        </li>
+        {% endfor %}
+      </ul>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="{{ url_for('static', filename='images/logo.jpeg') }}" type="image/jpeg">
+  <title>Produits - RO BUSINESS CENTER</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="admin-shell">
+    <aside class="admin-sidebar">
+      <h2>Admin</h2>
+      <a href="{{ url_for('main.admin_dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('main.admin_products') }}">Produits</a>
+      <a href="{{ url_for('main.admin_categories') }}">Catégories</a>
+      <a href="{{ url_for('main.admin_galerie') }}">Galerie</a>
+      <a href="{{ url_for('main.admin_messages') }}">Messages</a>
+      <a href="{{ url_for('main.admin_settings') }}">Paramètres</a>
+      <a href="{{ url_for('main.admin_logout') }}">Déconnexion</a>
+    </aside>
+    <main class="admin-main">
+      <h1>Produits</h1>
+      <a href="{{ url_for('main.add_product') }}" class="btn-primary">Ajouter un produit</a>
+      <table class="admin-table">
+        <tr><th>Nom</th><th>Catégorie</th><th>Disponibilité</th><th>Actions</th></tr>
+        {% for product in products %}
+        <tr>
+          <td>{{ product.name }}</td>
+          <td>{{ product.category_name or '—' }}</td>
+          <td>{{ product.availability or 'Disponible' }}</td>
+          <td>
+            <a href="{{ url_for('main.edit_product', product_id=product.id) }}">Éditer</a>
+            <form method="post" action="{{ url_for('main.delete_product', product_id=product.id) }}" style="display:inline;">
+              <button type="submit">Supprimer</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </table>
+    </main>
+  </div>
+</body>
+</html>

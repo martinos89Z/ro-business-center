@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="{{ url_for('static', filename='images/logo.jpeg') }}" type="image/jpeg">
+  <title>Catégories - RO BUSINESS CENTER</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="admin-shell">
+    <aside class="admin-sidebar">
+      <h2>Admin</h2>
+      <a href="{{ url_for('main.admin_dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('main.admin_products') }}">Produits</a>
+      <a href="{{ url_for('main.admin_categories') }}">Catégories</a>
+      <a href="{{ url_for('main.admin_galerie') }}">Galerie</a>
+      <a href="{{ url_for('main.admin_messages') }}">Messages</a>
+      <a href="{{ url_for('main.admin_settings') }}">Paramètres</a>
+      <a href="{{ url_for('main.admin_logout') }}">Déconnexion</a>
+    </aside>
+    <main class="admin-main">
+      <h1>Catégories</h1>
+      <form method="post" action="{{ url_for('main.add_category') }}" class="admin-form">
+        <input type="text" name="name" placeholder="Nom de catégorie" required>
+        <button type="submit" class="btn-submit">Ajouter</button>
+      </form>
+      <ul>
+        {% for category in categories %}
+        <li>
+          <form method="post" action="{{ url_for('main.edit_category', category_id=category.id) }}" style="display:inline;">
+            <input type="text" name="name" value="{{ category.name }}">
+            <button type="submit">Renommer</button>
+          </form>
+          <form method="post" action="{{ url_for('main.delete_category', category_id=category.id) }}" style="display:inline;">
+            <button type="submit">Supprimer</button>
+          </form>
+        </li>
+        {% endfor %}
+      </ul>
+    </main>
+  </div>
+</body>
+</html>

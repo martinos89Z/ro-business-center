@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="{{ url_for('static', filename='images/logo.jpeg') }}" type="image/jpeg">
+  <title>Ajouter un produit - RO BUSINESS CENTER</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="admin-shell">
+    <aside class="admin-sidebar">
+      <h2>Admin</h2>
+      <a href="{{ url_for('main.admin_dashboard') }}">Dashboard</a>
+      <a href="{{ url_for('main.admin_products') }}">Produits</a>
+      <a href="{{ url_for('main.admin_categories') }}">Catégories</a>
+      <a href="{{ url_for('main.admin_galerie') }}">Galerie</a>
+      <a href="{{ url_for('main.admin_messages') }}">Messages</a>
+      <a href="{{ url_for('main.admin_settings') }}">Paramètres</a>
+      <a href="{{ url_for('main.admin_logout') }}">Déconnexion</a>
+    </aside>
+    <main class="admin-main">
+      <h1>Ajouter un produit</h1>
+      <form method="post" enctype="multipart/form-data" class="admin-form">
+        <div class="form-group"><label>Nom</label><input type="text" name="name" required></div>
+        <div class="form-group"><label>Description</label><textarea name="description"></textarea></div>
+        <div class="form-group"><label>Marque</label><input type="text" name="brand"></div>
+        <div class="form-group"><label>Processeur</label><input type="text" name="processor"></div>
+        <div class="form-group"><label>RAM</label><input type="text" name="ram"></div>
+        <div class="form-group"><label>Stockage</label><input type="text" name="storage"></div>
+        <div class="form-group"><label>État</label><input type="text" name="state"></div>
+        <div class="form-group"><label>Disponibilité</label><input type="text" name="availability" value="Disponible"></div>
+        <div class="form-group"><label>Catégorie</label><select name="category_id"><option value="">Aucune</option>{% for category in categories %}<option value="{{ category.id }}">{{ category.name }}</option>{% endfor %}</select></div>
+        <div class="form-group"><label>Prix (FCFA)</label><input type="number" name="price" value="0"></div>
+        <div class="form-group"><label>Images</label><input type="file" name="images" multiple></div>
+        <button type="submit" class="btn-submit">Enregistrer</button>
+      </form>
+    </main>
+  </div>
+</body>
+</html>

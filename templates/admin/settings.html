@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" href="{{ url_for('static', filename='images/logo.jpeg') }}" type="image/jpeg">
+  <title>Paramètres - RO BUSINESS CENTER</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+
+<body>
+
+  <div class="admin-shell">
+
+    <aside class="admin-sidebar">
+
+      <h2>Admin</h2>
+
+      <a href="{{ url_for('main.admin_dashboard') }}">Dashboard</a>
+
+      <a href="{{ url_for('main.admin_products') }}">Produits</a>
+
+      <a href="{{ url_for('main.admin_categories') }}">Catégories</a>
+
+      <a href="{{ url_for('main.admin_galerie') }}">Galerie</a>
+
+      <a href="{{ url_for('main.admin_messages') }}">Messages</a>
+
+      <a href="{{ url_for('main.admin_settings') }}" class="active">Paramètres</a>
+
+      <a href="{{ url_for('main.admin_logout') }}">Déconnexion</a>
+
+    </aside>
+
+    <main class="admin-main">
+
+      <h1>Paramètres</h1>
+
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          {% for category, message in messages %}
+            <div class="alert alert-{{ category }}">{{ message }}</div>
+          {% endfor %}
+        {% endif %}
+      {% endwith %}
+
+      <form method="post" class="admin-form">
+
+        <div class="form-group">
+          <label for="site_name">Ro Business Center</label>
+          <input type="text" id="site_name" name="site_name" value="{{ settings.get('site_name', '') }}">
+        </div>
+
+        <div class="form-group">
+          <label for="admin_email">Email admin</label>
+          <input type="email" id="admin_email" name="admin_email" value="{{ settings.get('admin_email', '') }}">
+        </div>
+
+        <div class="form-group">
+          <label for="product_filters">Filtres produits</label>
+          <textarea id="product_filters" name="product_filters" rows="6" placeholder="Format: route:mot1,mot2|route2:mot3">{{ settings.get('product_filters', '') }}</textarea>
+          <small>Format par route : <code>nom_route:mot_cle1,mot_cle2</code>. Séparer les routes par <code>|</code>.</small>
+        </div>
+
+        <div class="form-group">
+          <label for="items_per_page">Éléments par page</label>
+          <input type="number" id="items_per_page" name="items_per_page" value="{{ settings.get('items_per_page', '12') }}" min="1" max="500">
+        </div>
+
+        <div class="form-group">
+          <label>
+            <input type="checkbox" name="allow_registration" value="true" {% if settings.get('allow_registration', 'true') == 'true' %}checked{% endif %}>
+            Autoriser les inscriptions
+          </label>
+        </div>
+
+        <hr style="margin: 30px 0; border: none; border-top: 1px solid #ddd;">
+
+        <h2 style="margin-bottom: 20px;">Changer le mot de passe</h2>
+
+        <div class="form-group">
+          <label for="current_password">Mot de passe actuel</label>
+          <input type="password" id="current_password" name="current_password">
+        </div>
+
+        <div class="form-group">
+          <label for="new_password">Nouveau mot de passe</label>
+          <input type="password" id="new_password" name="new_password" minlength="6">
+          <small>Minimum 6 caractères</small>
+        </div>
+
+        <div class="form-group">
+          <label for="confirm_password">Confirmer le mot de passe</label>
+          <input type="password" id="confirm_password" name="confirm_password" minlength="6">
+        </div>
+
+        <button type="submit" class="btn btn-primary">Enregistrer</button>
+
+      </form>
+
+    </main>
+
+  </div>
+
+</body>
+
+</html>
