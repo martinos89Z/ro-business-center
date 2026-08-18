@@ -383,7 +383,16 @@ class Product:
 
     @staticmethod
     def delete(product_id):
+        # First, delete all associated image files
+        images = ProductImage.for_product(product_id)
+        for img in images:
+            file_path = UPLOAD_FOLDER / img['filename']
+            if file_path.exists():
+                file_path.unlink(missing_ok=True)
+        
+        # Then delete from database
         conn = get_db_connection()
+        _execute(conn, 'DELETE FROM product_images WHERE product_id = ?', (product_id,))
         _execute(conn, 'DELETE FROM products WHERE id = ?', (product_id,))
         conn.commit()
         conn.close()

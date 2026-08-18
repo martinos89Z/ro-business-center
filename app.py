@@ -4,12 +4,11 @@ load_dotenv()
 
 from flask import Flask, send_from_directory, Response
 from flask_login import LoginManager
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
 from models import User, init_db
 from routes import main
 from config import SECRET_KEY, UPLOAD_FOLDER, MAX_CONTENT_LENGTH, WHATSAPP_PHONE
 from seo import SEOMetadata, StructuredData, SitemapGenerator, RobotsTxt, WebManifest
+from extensions import limiter
 
 app = Flask(__name__, static_folder='static', template_folder='templates')
 app.config['SECRET_KEY'] = SECRET_KEY
@@ -18,11 +17,8 @@ app.config['MAX_CONTENT_LENGTH'] = MAX_CONTENT_LENGTH
 
 UPLOAD_FOLDER.mkdir(parents=True, exist_ok=True)
 
-limiter = Limiter(
-    app=app,
-    key_func=get_remote_address,
-    default_limits=["200 per day", "50 per hour"]
-)
+# Initialize limiter with app
+limiter.init_app(app)
 
 login_manager = LoginManager()
 login_manager.login_view = 'main.admin_login'

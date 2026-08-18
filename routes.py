@@ -4,15 +4,11 @@ from pathlib import Path
 from urllib.parse import quote
 from flask import Blueprint, abort, flash, redirect, render_template, request, send_from_directory, url_for, jsonify
 from flask_login import login_user, logout_user, login_required, current_user
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
 from werkzeug.utils import secure_filename
 from models import Category, ContactMessage, Inscription, Product, ProductImage, Settings, User, get_db_connection, backup_database, _execute
 from config import ALLOWED_EXTENSIONS, UPLOAD_FOLDER, MAX_LOGIN_ATTEMPTS, LOGIN_ATTEMPT_WINDOW, WHATSAPP_PHONE
 from seo import SEOMetadata, StructuredData
-
-# Rate limiter for admin login
-limiter = Limiter(key_func=get_remote_address)
+from extensions import limiter
 
 def get_available_products(extra_filter=None, params=()):
     conn = get_db_connection()
