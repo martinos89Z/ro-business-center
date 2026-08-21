@@ -355,21 +355,37 @@ def ensure_default_categories():
 pip install --upgrade -r requirements.txt
 ```
 
-### Vider le cache
+### Vider le cache (Windows)
+```powershell
+Remove-Item -Recurse -Force __pycache__
+Remove-Item -Recurse -Force .venv\__pycache__ -ErrorAction SilentlyContinue
+```
+
+### Vider le cache (Linux/Mac)
 ```bash
 rm -rf __pycache__
-rm -rf instance/__pycache__
+rm -rf .venv/__pycache__
 ```
 
 ### Réinitialiser la base de données
+```powershell
+# Windows
+Remove-Item database.db -Force
+# La base sera recréée automatiquement au démarrage
+```
+
 ```bash
-rm instance/ro_business.db
-rm instance/ro_business.db # La base sera recréée automatiquement
+# Linux/Mac
+rm database.db
+# La base sera recréée automatiquement au démarrage
 ```
 
 ### Vérifier les logs de production
 ```bash
-# Render/Heroku
+# Render
+# Allez dans votre dashboard Render → Logs
+
+# Heroku
 heroku logs --tail
 
 # VPS avec systemd
