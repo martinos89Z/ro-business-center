@@ -15,6 +15,9 @@ if USE_POSTGRES:
 def _execute(conn, query, params=()):
     if USE_POSTGRES:
         query = query.replace('?', '%s')
+        cursor = conn.cursor()
+        cursor.execute(query, params)
+        return cursor
     return conn.execute(query, params)
 
 
