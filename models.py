@@ -11,11 +11,12 @@ from config import DATABASE_URL, USE_POSTGRES, UPLOAD_FOLDER
 if USE_POSTGRES:
     import psycopg2
     from psycopg2 import sql
+    from psycopg2.extras import RealDictCursor
 
 def _execute(conn, query, params=()):
     if USE_POSTGRES:
         query = query.replace('?', '%s')
-        cursor = conn.cursor()
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
         cursor.execute(query, params)
         return cursor
     return conn.execute(query, params)
@@ -110,7 +111,7 @@ def init_db():
             value TEXT NOT NULL
         );
         '''
-        cursor = conn.cursor()
+        cursor = conn.cursor(cursor_factory=RealDictCursor)
         cursor.execute(init_script)
         conn.commit()
         cursor.close()
@@ -292,7 +293,7 @@ class Category:
     def create(name):
         conn = get_db_connection()
         if USE_POSTGRES:
-            cursor = conn.cursor()
+            cursor = conn.cursor(cursor_factory=RealDictCursor)
             cursor.execute('INSERT INTO categories (name) VALUES (%s) RETURNING id', (name,))
             category_id = cursor.fetchone()[0]
             cursor.close()
@@ -347,7 +348,7 @@ class Product:
     def create(data):
         conn = get_db_connection()
         if USE_POSTGRES:
-            cursor = conn.cursor()
+            cursor = conn.cursor(cursor_factory=RealDictCursor)
             cursor.execute('''
                 INSERT INTO products (name, description, brand, processor, ram, storage, state, availability, category_id, price)
                 VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s) RETURNING id
@@ -569,3 +570,8 @@ class Inscription:
         _execute(conn, 'DELETE FROM inscriptions WHERE id = ?', (inscription_id,))
         conn.commit()
         conn.close()
+
+
+
+
+
