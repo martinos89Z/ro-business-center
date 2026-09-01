@@ -54,7 +54,7 @@ class SEOMetadata:
     }
     
     # URL du site (à configurer en production)
-    BASE_URL = "https://robusinesscenter.com"  # À remplacer par l'URL réelle
+    BASE_URL = "https://robusinesscenter.onrender.com"  # À remplacer par l'URL réelle
     
     @staticmethod
     def get_page_metadata(page_name, additional_info=None):
@@ -191,7 +191,7 @@ class SEOMetadata:
     @staticmethod
     def render_meta_tags(metadata):
         """Génère les balises meta HTML"""
-        base_url = os.getenv('BASE_URL', 'https://robusinesscenter.com')
+        base_url = os.getenv('BASE_URL', 'https://robusinesscenter.onrender.com')
         tags = []
         
         # Meta tags de base
